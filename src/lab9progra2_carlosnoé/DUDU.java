@@ -7,8 +7,12 @@ package lab9progra2_carlosnoé;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
 import javax.swing.JFileChooser;
+import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -32,7 +36,14 @@ public class DUDU extends javax.swing.JFrame {
         HiloHora.start();
         HiloFecha.start();
     }
+public static void agregarTexto(String archivo, String Texto) {
+        try ( PrintWriter writer = new PrintWriter(new FileWriter(archivo, true))) {
+            writer.println(Texto);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -131,6 +142,11 @@ public class DUDU extends javax.swing.JFrame {
 
         jButton1.setForeground(new java.awt.Color(0, 0, 0));
         jButton1.setText("Subir Archivo");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel2.setBackground(new java.awt.Color(0, 0, 0));
         jLabel2.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
@@ -229,7 +245,28 @@ public class DUDU extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public void cargarTexto() {
+        try ( BufferedReader reader = new BufferedReader(new FileReader("UsuariosRegulares.txt"))) {
+            String line ;
+            while ((line = reader.readLine()) != null) {
+                JTA_Archivo.setText(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+
+
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    
+    
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+//Hilo
         File fichero = null;
         FileReader fr = null;
         BufferedReader br = null;
@@ -257,9 +294,7 @@ public class DUDU extends javax.swing.JFrame {
             fr.close();
         } catch (IOException ex) {
         }
-
-
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
