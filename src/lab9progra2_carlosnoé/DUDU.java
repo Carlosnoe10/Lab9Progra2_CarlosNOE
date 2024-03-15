@@ -12,7 +12,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -24,6 +27,13 @@ public class DUDU extends javax.swing.JFrame {
     /**
      * Creates new form DUDU
      */
+    public File fichero = null;
+    public FileReader fr = null;
+    public BufferedReader br = null;
+    public File Path = null;
+    private javax.swing.JTextArea JTA_Archivo1 = new JTextArea();
+    administrarBarra Barra;
+
     public DUDU() {
         initComponents();
         Principal.pack();
@@ -35,8 +45,10 @@ public class DUDU extends javax.swing.JFrame {
         Thread HiloFecha = new Thread(Fecha);
         HiloHora.start();
         HiloFecha.start();
+        JTA_Archivo1.setText("");
     }
-public static void agregarTexto(String archivo, String Texto) {
+
+    public static void agregarTexto(String archivo, String Texto) {
         try ( PrintWriter writer = new PrintWriter(new FileWriter(archivo, true))) {
             writer.println(Texto);
         } catch (IOException e) {
@@ -44,6 +56,7 @@ public static void agregarTexto(String archivo, String Texto) {
         }
 
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -64,7 +77,7 @@ public static void agregarTexto(String archivo, String Texto) {
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jProgressBar1 = new javax.swing.JProgressBar();
+        JPB_barrita = new javax.swing.JProgressBar();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         JTA_Archivo = new javax.swing.JTextArea();
@@ -153,6 +166,9 @@ public static void agregarTexto(String archivo, String Texto) {
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("Subiendo Archivo");
 
+        JPB_barrita.setBackground(new java.awt.Color(204, 51, 255));
+        JPB_barrita.setForeground(new java.awt.Color(51, 204, 255));
+
         jLabel3.setBackground(new java.awt.Color(0, 0, 0));
         jLabel3.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
@@ -182,7 +198,7 @@ public static void agregarTexto(String archivo, String Texto) {
                         .addGap(107, 107, 107)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(JPB_barrita, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -203,7 +219,7 @@ public static void agregarTexto(String archivo, String Texto) {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(JPB_barrita, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(112, 112, 112)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -246,54 +262,39 @@ public static void agregarTexto(String archivo, String Texto) {
     }// </editor-fold>//GEN-END:initComponents
 
     public void cargarTexto() {
+
         try ( BufferedReader reader = new BufferedReader(new FileReader("UsuariosRegulares.txt"))) {
-            String line ;
+            String line;
             while ((line = reader.readLine()) != null) {
                 JTA_Archivo.setText(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
-
+        if (Path != null) {
+            try ( PrintWriter writer = new PrintWriter(new FileWriter(Path, true))) {
+                writer.println(JTA_Archivo.getText());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Cargue el archivo primero");
+        }
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    
-    
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 //Hilo
-        File fichero = null;
-        FileReader fr = null;
-        BufferedReader br = null;
-        JTA_Archivo.setText("");
-        try {
-            JFileChooser jfc = new JFileChooser("./");
-            int seleccion = jfc.showOpenDialog(this);
-            if (seleccion == JFileChooser.APPROVE_OPTION) {
-                fichero = jfc.getSelectedFile();
-                fr = new FileReader(fichero);
-                br = new BufferedReader(fr);
-                String linea;
-                JTA_Archivo.setText("");
-                while ((linea = br.readLine()) != null) {
-                    JTA_Archivo.append(linea);
-                    JTA_Archivo.append("\n");
-                }
-            } //fin if
+        String Contenido;
+        Barra = new administrarBarra(JPB_barrita);
+        Barra.start();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            br.close();
-            fr.close();
-        } catch (IOException ex) {
-        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -339,9 +340,88 @@ public static void agregarTexto(String archivo, String Texto) {
         });
     }
 
+    public class administrarBarra extends Thread {
+
+        private JProgressBar barra;
+        private boolean avanzar;
+        private boolean vive;
+
+        public administrarBarra(JProgressBar barra) {
+            this.barra = barra;
+            avanzar = true;
+            vive = true;
+        }
+
+        public boolean isVive() {
+            return vive;
+        }
+
+        public void setVive(boolean vive) {
+            this.vive = vive;
+        }
+
+        public JProgressBar getBarra() {
+            return barra;
+        }
+
+        public void setBarra(JProgressBar barra) {
+            this.barra = barra;
+        }
+
+        @Override
+        public void run() {
+            File fichero = null;
+            FileReader fr = null;
+            BufferedReader br = null;
+            JTA_Archivo.setText("");
+            try {
+                JFileChooser jfc = new JFileChooser("./");
+                FileNameExtensionFilter filtro
+                        = new FileNameExtensionFilter(
+                                "Archivos de Texto", "txt");
+                jfc.setFileFilter(filtro);
+                int seleccion = jfc.showOpenDialog(Principal);
+                if (seleccion == JFileChooser.APPROVE_OPTION) {
+                    fichero = jfc.getSelectedFile();
+
+                    while (vive) {
+
+                        barra.setValue(barra.getValue() + 1);
+                        if (barra.getValue() == 100) {
+                            vive = false;
+                            Path = jfc.getSelectedFile();
+                            fr = new FileReader(fichero);
+                            br = new BufferedReader(fr);
+                            String linea;
+                            JTA_Archivo.setText("");
+                            while ((linea = br.readLine()) != null) {
+                                JTA_Archivo.append(linea);
+                                JTA_Archivo.append("\n");
+                            }
+                        }
+
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException ex) {
+                        }
+                    }
+                }
+                try {
+                    br.close();
+                    fr.close();
+                } catch (IOException ex) {
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel JL_FechaActual;
     private javax.swing.JLabel JL_HoraActual;
+    private javax.swing.JProgressBar JPB_barrita;
     private javax.swing.JTextArea JTA_Archivo;
     private javax.swing.JFrame Principal;
     private javax.swing.JButton jButton1;
@@ -354,7 +434,6 @@ public static void agregarTexto(String archivo, String Texto) {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

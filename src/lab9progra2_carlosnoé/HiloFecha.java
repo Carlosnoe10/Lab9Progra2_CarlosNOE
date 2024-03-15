@@ -15,7 +15,7 @@ public class HiloFecha implements Runnable {
     public void run() {
         while(true){
             Date h=new Date();
-            DateFormat f=new SimpleDateFormat("DD/MM/yyyy");
+            DateFormat f=new SimpleDateFormat("dd/MM/yyyy");
             hora.setText( f.format(h) );
             try {
                 Thread.sleep(50);
